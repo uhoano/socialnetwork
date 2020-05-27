@@ -4,7 +4,12 @@ include_once "PDO.php";
 function GetOneCommentFromId($id)
 {
   global $PDO;
-  $response = $PDO->query("SELECT * FROM comment WHERE id = $id");
+  $response = $PDO->prepare("SELECT * FROM comment WHERE id = :id ");
+  $response->execute(
+    array(
+      "id" => $id
+    )
+  );
   return $response->fetch();
 }
 
@@ -38,4 +43,19 @@ function GetAllCommentsFromPostId($postId)
   );
   $rows = $response->fetchAll();
   return $rows;
+}
+
+function CreateNewComment($userId, $postId, $comment)
+{
+  global $PDO;
+  if (!empty($comment)) {
+    $preparedRequest = $PDO->prepare("INSERT INTO comment(user_id, post_id, content) values (:userId, :postId, :comment)");
+    $preparedRequest->execute(
+      array(
+        "userId" => $userId,
+        "postId" => $postId,
+        "comment" => $comment
+      )
+    );
+  }
 }

@@ -68,6 +68,21 @@
         </blockquote>
       </div>
     </div>
+    <?php
+    if (isset($_SESSION['userId'])) {
+    ?>
+      <div class="row newMsg">
+        <div class="col">
+          <form class="input-group" method="POST" action="?action=newMsg">
+            <input name="msg" class="form-control" placeholder="Add a message" type="text">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    <?php
+    }
+    ?>
+
     <div class="row">
       <div class="col">
         <?php
@@ -110,6 +125,22 @@
                       </li>
                   <?php
                     }
+                  }
+                  ?>
+
+                  <?php
+                  if (isset($_SESSION['userId'])) {
+                  ?>
+                    <div class="input-group">
+                      <form class="input-group" method="POST" action="?action=newComment">
+                        <input name="postId" type="hidden" value="<?= $onePost['id'] ?>">
+                        <input name="comment" class="form-control" placeholder="Add a comment" type="text">
+                        <span class="input-group-text">
+                          <a href="#" onclick="$(this).closest('form').submit()"><i class="fa fa-edit"></i></a>
+                        </span>
+                      </form>
+                    </div>
+                  <?php
                   }
                   ?>
                 </ul>

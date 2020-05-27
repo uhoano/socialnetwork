@@ -29,11 +29,31 @@ function GetAllPostsFromUserId($userId)
 function SearchInPosts($search)
 {
   global $PDO;
-  $response = $PDO->query(
+  $response = $PDO->prepare(
     "SELECT post.*, user.nickname "
       . "FROM post LEFT JOIN user on (post.user_id = user.id) "
-      . "WHERE content like '%$search%' "
+      . "WHERE content like :search "
       . "ORDER BY post.created_at DESC"
   );
+  $searchWithPercent = "%$search%";
+  $response->execute(
+    array(
+      "search" => $searchWithPercent
+    )
+  );
   return $response->fetchAll();
+}
+
+function CreateNewPost($userId, $msg)
+{
+  global $PDO;
+  if (!empty($userId) && !empty($msg)) {
+    $preparedRequest = $PDO->prepare("INSERT INTO post(user_id, content) values ($userId, '$msg')");
+    $preparedRequest->execute(
+      array(
+        "user_id" => $userId,
+        "content" => $msg
+      )
+    );
+  }
 }
